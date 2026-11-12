@@ -12,7 +12,7 @@ const byId=new Map(data.map(t=>[t.id,t]));
 const paid=new Set(),free=new Set(),price=125;
 const panel=document.getElementById("cart-panel");
 const grid=document.getElementById("grid");
-const limit=()=>paid.size*price>=5000?5:paid.size*price>2500?2:0;
+const limit=()=>paid.size*price>=5000?5:paid.size*price>=2500?2:0;
 try{const stored=JSON.parse(localStorage.getItem("cc-cart")||"{}");for(const id of stored.paid||[])if(byId.has(id))paid.add(id);for(const id of stored.free||[])if(byId.has(id))free.add(id);}catch(_){}
 function update(){
 for(const id of free)if(paid.has(id))free.delete(id);
@@ -31,7 +31,7 @@ if(!paid.size&&!free.size){const p=document.createElement("p");p.textContent="Yo
 document.getElementById("cart-toggle").textContent="Cart ("+(paid.size+free.size)+")";
 document.getElementById("cart-total").textContent="Subtotal: $"+(paid.size*price/100).toFixed(2);
 document.getElementById("cart-rewards").textContent="Free tracks: "+free.size+" / "+limit()+" selected (non-stacking)";
-document.getElementById("cart-next").textContent=limit()>free.size?"Choose "+(limit()-free.size)+" free track(s) using the Free button beside any unselected track.":paid.size<21?"Add "+(21-paid.size)+" paid tracks to unlock 2 free tracks.":paid.size<40?"Add "+(40-paid.size)+" paid tracks to unlock 5 free tracks.":"All available free rewards selected.";
+document.getElementById("cart-next").textContent=limit()>free.size?"Choose "+(limit()-free.size)+" free track(s) using the Free button beside any unselected track.":paid.size<20?"Add "+(20-paid.size)+" paid tracks to unlock 2 free tracks.":paid.size<40?"Add "+(40-paid.size)+" paid tracks to unlock 5 free tracks.":"All available free rewards selected.";
 document.querySelectorAll("[data-add]").forEach(b=>{const id=b.dataset.add;b.textContent=paid.has(id)?"✓ In cart":"Add to cart · $1.25";b.disabled=paid.has(id)||free.has(id);});
 document.querySelectorAll("[data-free]").forEach(b=>{const id=b.dataset.free;b.textContent=free.has(id)?"✓ Free selected":"Choose free";b.disabled=free.has(id)||paid.has(id)||free.size>=limit();});
 try{localStorage.setItem("cc-cart",JSON.stringify({paid:Array.from(paid),free:Array.from(free)}));}catch(_){}
