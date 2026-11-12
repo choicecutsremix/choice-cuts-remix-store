@@ -21,7 +21,7 @@ const t=map.get(id),row=document.createElement('div'),button=document.createElem
 row.className='cart-item';row.textContent=t.artist+' — '+t.title+' ('+kind+') ';
 button.textContent='Remove';button.onclick=()=>{set.delete(id);update();};row.appendChild(button);document.getElementById('cart-lines').appendChild(row);
 }}
-document.getElementById('cart-total').textContent='Subtotal: +(paid.size*price/100).toFixed(2);
+document.getElementById('cart-total').textContent='Subtotal: '+String.fromCharCode(36)+(paid.size*price/100).toFixed(2);
 document.getElementById('cart-rewards').textContent='Free tracks selected: '+free.size+' of '+limit()+' earned. Rewards do not stack.';
 document.querySelectorAll('[data-add]').forEach(b=>{b.textContent=paid.has(b.dataset.add)?'In cart':free.has(b.dataset.add)?'Free track selected':'Add to cart · $1.25';});
 try{localStorage.setItem('cc-cart',JSON.stringify({paid:[...paid],free:[...free]}));}catch(e){}
