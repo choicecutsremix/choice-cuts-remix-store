@@ -1,0 +1,45 @@
+name: Deploy Choice Cuts Remix
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare website
+        run: |
+          mkdir -p /tmp/cc-site
+          rsync -a --exclude='.git' --exclude='.github' --exclude='Choice_Cuts_Remix_Stage_3C_Social_Track_Pages.zip' ./ /tmp/cc-site/
+          if [ -f Choice_Cuts_Remix_Stage_3C_Social_Track_Pages.zip ]; then
+            unzip -o Choice_Cuts_Remix_Stage_3C_Social_Track_Pages.zip -d /tmp/cc-site
+          fi
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: /tmp/cc-site
+
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
